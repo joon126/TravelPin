@@ -46,31 +46,37 @@
     <p class="hint" id="originHint">지역을 입력하면 그 지역 기준으로 거리 안에서 뽑아요. 비워두면 전국에서 뽑아요.</p>
   </section>
 
-  <section class="panel-right">
+  <!-- is-empty 클래스가 붙어 있으면 지도 실루엣만, 떼면 결과 레이아웃 -->
+  <section class="panel-right is-empty" id="stage">
     <div class="eyebrow">뽑힌 여행지</div>
 
-    <div class="empty-state" id="emptyState">
-      <div class="icon">📍</div>
-      <p>아직 뽑지 않았어요.<br>왼쪽에서 핀을 던져보세요.</p>
-    </div>
-
-    <div class="result-body" id="resultBody">
-      <div>
-        <h2 class="result-name" id="resultName">-</h2>
-        <div class="result-meta">
-          <span id="metaDistance"></span>
-          <span id="metaTime"></span>
+    <div class="stage-grid">
+      <div class="stage-info">
+        <div class="empty-state" id="emptyState">
+          <p>아직 뽑지 않았어요.<br>왼쪽에서 핀을 던져보세요.</p>
         </div>
-        <div class="actions">
-          <button id="btnRetry">다시 뽑기</button>
-          <button id="btnMap">지도에서 보기</button>
-          <button id="btnShare">공유하기</button>
+
+        <div class="result-body" id="resultBody">
+          <h2 class="result-name" id="resultName">-</h2>
+          <div class="result-meta">
+            <span id="metaDistance"></span>
+            <span id="metaTime"></span>
+          </div>
+          <div class="actions">
+            <button id="btnRetry">다시 뽑기</button>
+            <button id="btnMap">지도에서 보기</button>
+            <button id="btnShare">공유하기</button>
+          </div>
         </div>
       </div>
+
+      <!-- 외곽선 좌표는 data.js, 그리는 건 app.js (핀과 같은 투영식을 쓴다) -->
       <div class="map-wrap">
-        <svg viewBox="0 0 200 300" id="mapSvg" aria-hidden="true">
-          <path d="M70 8 L96 4 L112 18 L108 34 L120 40 L134 52 L150 60 L158 78 L150 92 L156 108 L148 122 L152 138 L140 150 L142 168 L128 180 L132 196 L118 210 L110 228 L96 236 L90 254 L74 262 L64 250 L56 260 L46 246 L52 228 L44 214 L52 198 L44 182 L52 166 L46 150 L54 134 L48 116 L58 100 L52 82 L62 66 L56 48 L66 32 L60 16 Z"
-                fill="none" stroke="#3a3d55" stroke-width="1.5" stroke-linejoin="round"/>
+        <!-- viewBox는 투영 결과(육지 x42~141 / y56~206, 울릉 x177, 제주 y242)에 여백만 둔 값 -->
+        <svg viewBox="32 46 157 208" id="mapSvg" aria-hidden="true">
+          <path id="mainlandShape" class="map-shape" d=""/>
+          <ellipse id="jejuShape" class="map-shape" cx="0" cy="0" rx="0" ry="0"/>
+          <circle id="ulleungShape" class="map-shape" cx="0" cy="0" r="0"/>
           <line id="dashLine" x1="0" y1="0" x2="0" y2="0" stroke="var(--accent)" stroke-width="1" stroke-dasharray="3 3" opacity="0"/>
           <circle id="originDot" cx="0" cy="0" r="3.5" fill="#565a78" opacity="0"/>
           <circle id="resultDot" cx="0" cy="0" r="6" fill="var(--accent)" opacity="0"/>

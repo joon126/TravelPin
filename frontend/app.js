@@ -5,8 +5,11 @@
 
 /* ------------------------------------------------------------------ 상수 */
 
-// 미니맵 SVG(200x300)에 위경도를 투영할 때 쓰는 대한민국 대략 경계
-const BOUNDS = { minLat: 33.0, maxLat: 38.7, minLng: 124.5, maxLng: 132.0 };
+// 미니맵 SVG(200x300) 투영 설정.
+// 경도 1도는 위도 1도보다 짧으므로 cos(중심 위도)로 보정해야 모양이 안 찌그러진다.
+// pxPerLng 값은 울릉도(동경 130.9)까지 화면 안에 들어오는 배율로 잡았다.
+const MAP = { centerLat: 35.9, centerLng: 128.1, cx: 100, cy: 150, pxPerLng: 27.9 };
+MAP.pxPerLat = MAP.pxPerLng / Math.cos(MAP.centerLat * Math.PI / 180);
 
 // 직선거리 → 실제 도로 거리 보정 계수, 평균 주행 속도(km/h)
 const ROAD_FACTOR = 1.3;
@@ -34,11 +37,12 @@ function driveTime(km) {
   return `차로 약 ${h}시간 ${m}분`;
 }
 
-// 위경도 → 미니맵 SVG 좌표
+// 위경도 → 미니맵 SVG 좌표. 실루엣과 핀이 이 함수를 같이 쓴다.
 function toXY(p) {
-  const x = ((p.lng - BOUNDS.minLng) / (BOUNDS.maxLng - BOUNDS.minLng)) * 170 + 15;
-  const y = ((BOUNDS.maxLat - p.lat) / (BOUNDS.maxLat - BOUNDS.minLat)) * 260 + 15;
-  return { x, y };
+  return {
+    x: MAP.cx + (p.lng - MAP.centerLng) * MAP.pxPerLng,
+    y: MAP.cy - (p.lat - MAP.centerLat) * MAP.pxPerLat
+  };
 }
 
 // 입력한 지역명으로 출발지 찾기 (정확히 일치 → 부분 일치 순)
@@ -74,6 +78,31 @@ mainPool.forEach(c => {
   o.value = c.n;
   originList.appendChild(o);
 });
+
+// 대한민국 실루엣 — 뽑기 전 빈 화면에서도 이것만은 보인다
+function drawSilhouette() {
+  const d = mainlandOutline
+    .map((p, i) => {
+      const { x, y } = toXY(p);
+      return `${i === 0 ? 'M' : 'L'}${x.toFixed(1)} ${y.toFixed(1)}`;
+    })
+    .join(' ') + ' Z';
+  document.getElementById('mainlandShape').setAttribute('d', d);
+
+  const jeju = toXY(jejuShape);
+  const jejuEl = document.getElementById('jejuShape');
+  jejuEl.setAttribute('cx', jeju.x.toFixed(1));
+  jejuEl.setAttribute('cy', jeju.y.toFixed(1));
+  jejuEl.setAttribute('rx', (jejuShape.rLng * MAP.pxPerLng).toFixed(1));
+  jejuEl.setAttribute('ry', (jejuShape.rLat * MAP.pxPerLat).toFixed(1));
+
+  const ulleung = toXY(ulleungShape);
+  const ulleungEl = document.getElementById('ulleungShape');
+  ulleungEl.setAttribute('cx', ulleung.x.toFixed(1));
+  ulleungEl.setAttribute('cy', ulleung.y.toFixed(1));
+  ulleungEl.setAttribute('r', (ulleungShape.rLat * MAP.pxPerLat).toFixed(1));
+}
+drawSilhouette();
 
 /* ----------------------------------------------------------- 컨트롤 바인딩 */
 
@@ -122,8 +151,7 @@ function throwPin() {
 }
 
 function renderResult(picked, origin) {
-  document.getElementById('emptyState').style.display = 'none';
-  document.getElementById('resultBody').classList.add('show');
+  document.getElementById('stage').classList.remove('is-empty');
   document.getElementById('resultName').textContent = picked.n;
 
   const metaDistance = document.getElementById('metaDistance');
