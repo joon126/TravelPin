@@ -1,15 +1,10 @@
 /* ==========================================================================
    트래블핀 — 앱 로직
-   지역 데이터(mainPool / islandPool)는 data.js에서 불러온다.
+   지역 데이터(mainPool / islandPool)와 투영 상수(MAP)는 data.js,
+   시·도 경계 path(provinceShapes)는 map-shapes.js에서 불러온다.
    ========================================================================== */
 
 /* ------------------------------------------------------------------ 상수 */
-
-// 미니맵 SVG(200x300) 투영 설정.
-// 경도 1도는 위도 1도보다 짧으므로 cos(중심 위도)로 보정해야 모양이 안 찌그러진다.
-// pxPerLng 값은 울릉도(동경 130.9)까지 화면 안에 들어오는 배율로 잡았다.
-const MAP = { centerLat: 35.9, centerLng: 128.1, cx: 100, cy: 150, pxPerLng: 27.9 };
-MAP.pxPerLat = MAP.pxPerLng / Math.cos(MAP.centerLat * Math.PI / 180);
 
 // 직선거리 → 실제 도로 거리 보정 계수, 평균 주행 속도(km/h)
 const ROAD_FACTOR = 1.3;
@@ -79,20 +74,22 @@ mainPool.forEach(c => {
   originList.appendChild(o);
 });
 
-// 대한민국 실루엣 — 뽑기 전 빈 화면에서도 이것만은 보인다
+// 대한민국 실루엣 — 뽑기 전 빈 화면에서도 이것만은 보인다.
+// 시·도를 한 장씩 얹으면 맞닿은 테두리가 곧 내부 경계선이 된다.
 function drawSilhouette() {
-  const d = mainlandOutline
-    .map((p, i) => {
-      const { x, y } = toXY(p);
-      return `${i === 0 ? 'M' : 'L'}${x.toFixed(1)} ${y.toFixed(1)}`;
-    })
-    .join(' ') + ' Z';
-  document.getElementById('mainlandShape').setAttribute('d', d);
+  const svgns = 'http://www.w3.org/2000/svg';
+  const provinceLayer = document.getElementById('provinceLayer');
+  provinceShapes.forEach(province => {
+    const el = document.createElementNS(svgns, 'path');
+    el.setAttribute('class', 'map-shape');
+    el.setAttribute('d', province.d);
+    provinceLayer.appendChild(el);
+  });
 
   const layer = document.getElementById('islandLayer');
   islandShapes.forEach(island => {
     const { x, y } = toXY(island);
-    const el = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
+    const el = document.createElementNS(svgns, 'ellipse');
     el.setAttribute('class', 'map-shape');
     el.setAttribute('cx', x.toFixed(1));
     el.setAttribute('cy', y.toFixed(1));

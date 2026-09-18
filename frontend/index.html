@@ -70,11 +70,11 @@
         </div>
       </div>
 
-      <!-- 외곽선 좌표는 data.js, 그리는 건 app.js (핀과 같은 투영식을 쓴다) -->
+      <!-- 시·도 경계는 map-shapes.js, 그리는 건 app.js (핀과 같은 투영식을 쓴다) -->
       <div class="map-wrap">
-        <!-- viewBox는 투영 결과(육지 x42~141, 제주 y242, 독도 x205)에 여백만 둔 값 -->
-        <svg viewBox="32 46 177 208" id="mapSvg" aria-hidden="true">
-          <path id="mainlandShape" class="map-shape" d=""/>
+        <!-- viewBox는 투영 결과(백령도 x3 ~ 독도 x206, y57~245)에 여백만 둔 값 -->
+        <svg viewBox="-3 52 214 198" id="mapSvg" aria-hidden="true">
+          <g id="provinceLayer"></g>
           <g id="islandLayer"></g>
           <line id="dashLine" x1="0" y1="0" x2="0" y2="0" stroke="var(--accent)" stroke-width="1" stroke-dasharray="3 3" opacity="0"/>
           <circle id="originDot" cx="0" cy="0" r="3.5" fill="#565a78" opacity="0"/>
@@ -89,6 +89,7 @@
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script src="data.js"></script>
+<script src="map-shapes.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

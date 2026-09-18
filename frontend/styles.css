@@ -183,7 +183,7 @@ input[type="range"]::-moz-range-thumb {
 .stage-grid {
   flex: 1;
   display: grid;
-  grid-template-columns: 1fr 220px;
+  grid-template-columns: 1fr 250px;
   gap: 24px;
   align-items: start;
 }
@@ -196,7 +196,7 @@ input[type="range"]::-moz-range-thumb {
   gap: 18px;
 }
 .panel-right.is-empty .map-wrap { order: -1; }
-.panel-right.is-empty .map-wrap svg { max-width: 240px; }
+.panel-right.is-empty .map-wrap svg { max-width: 340px; }
 
 .empty-state {
   display: none;
@@ -251,14 +251,19 @@ input[type="range"]::-moz-range-thumb {
 .actions button:hover { border-color: var(--accent); color: var(--text-1); }
 
 .map-wrap { display: flex; align-items: flex-start; justify-content: center; }
-.map-wrap svg { width: 100%; max-width: 200px; }
+.map-wrap svg { width: 100%; max-width: 250px; }
 
-/* 대한민국 실루엣 — 뽑기 전에도 항상 보인다 */
+/* 대한민국 실루엣 — 뽑기 전에도 항상 보인다.
+   시·도 path가 서로 맞닿아 있어 테두리가 곧 내부 경계선이 된다.
+   evenodd라야 광역시를 품은 도(道)의 구멍이 제대로 뚫린다.
+   non-scaling-stroke 덕에 지도를 키우든 줄이든 선 굵기는 그대로다. */
 .map-shape {
-  fill: #1b1d2c;
-  stroke: #3a3d55;
-  stroke-width: 1.2;
+  fill: #232640;
+  stroke: #4d5273;
+  stroke-width: 0.8px;
   stroke-linejoin: round;
+  fill-rule: evenodd;
+  vector-effect: non-scaling-stroke;
 }
 
 /* ---------------------------------------------------------------- toast */
@@ -293,8 +298,8 @@ input[type="range"]::-moz-range-thumb {
   .panel-right { padding-left: 0; }
   .stage-grid { grid-template-columns: 1fr; }
   .map-wrap { order: -1; }
-  .map-wrap svg { max-width: 140px; margin: 0 auto 8px; }
-  .panel-right.is-empty .map-wrap svg { max-width: 150px; }
+  .map-wrap svg { max-width: 190px; margin: 0 auto 8px; }
+  .panel-right.is-empty .map-wrap svg { max-width: 230px; }
   header { padding: 16px 18px; }
 }
 
