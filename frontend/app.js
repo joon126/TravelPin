@@ -89,18 +89,17 @@ function drawSilhouette() {
     .join(' ') + ' Z';
   document.getElementById('mainlandShape').setAttribute('d', d);
 
-  const jeju = toXY(jejuShape);
-  const jejuEl = document.getElementById('jejuShape');
-  jejuEl.setAttribute('cx', jeju.x.toFixed(1));
-  jejuEl.setAttribute('cy', jeju.y.toFixed(1));
-  jejuEl.setAttribute('rx', (jejuShape.rLng * MAP.pxPerLng).toFixed(1));
-  jejuEl.setAttribute('ry', (jejuShape.rLat * MAP.pxPerLat).toFixed(1));
-
-  const ulleung = toXY(ulleungShape);
-  const ulleungEl = document.getElementById('ulleungShape');
-  ulleungEl.setAttribute('cx', ulleung.x.toFixed(1));
-  ulleungEl.setAttribute('cy', ulleung.y.toFixed(1));
-  ulleungEl.setAttribute('r', (ulleungShape.rLat * MAP.pxPerLat).toFixed(1));
+  const layer = document.getElementById('islandLayer');
+  islandShapes.forEach(island => {
+    const { x, y } = toXY(island);
+    const el = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
+    el.setAttribute('class', 'map-shape');
+    el.setAttribute('cx', x.toFixed(1));
+    el.setAttribute('cy', y.toFixed(1));
+    el.setAttribute('rx', (island.rLng * MAP.pxPerLng).toFixed(1));
+    el.setAttribute('ry', (island.rLat * MAP.pxPerLat).toFixed(1));
+    layer.appendChild(el);
+  });
 }
 drawSilhouette();
 

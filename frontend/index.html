@@ -72,11 +72,10 @@
 
       <!-- 외곽선 좌표는 data.js, 그리는 건 app.js (핀과 같은 투영식을 쓴다) -->
       <div class="map-wrap">
-        <!-- viewBox는 투영 결과(육지 x42~141 / y56~206, 울릉 x177, 제주 y242)에 여백만 둔 값 -->
-        <svg viewBox="32 46 157 208" id="mapSvg" aria-hidden="true">
+        <!-- viewBox는 투영 결과(육지 x42~141, 제주 y242, 독도 x205)에 여백만 둔 값 -->
+        <svg viewBox="32 46 177 208" id="mapSvg" aria-hidden="true">
           <path id="mainlandShape" class="map-shape" d=""/>
-          <ellipse id="jejuShape" class="map-shape" cx="0" cy="0" rx="0" ry="0"/>
-          <circle id="ulleungShape" class="map-shape" cx="0" cy="0" r="0"/>
+          <g id="islandLayer"></g>
           <line id="dashLine" x1="0" y1="0" x2="0" y2="0" stroke="var(--accent)" stroke-width="1" stroke-dasharray="3 3" opacity="0"/>
           <circle id="originDot" cx="0" cy="0" r="3.5" fill="#565a78" opacity="0"/>
           <circle id="resultDot" cx="0" cy="0" r="6" fill="var(--accent)" opacity="0"/>

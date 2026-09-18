@@ -196,7 +196,7 @@ input[type="range"]::-moz-range-thumb {
   gap: 18px;
 }
 .panel-right.is-empty .map-wrap { order: -1; }
-.panel-right.is-empty .map-wrap svg { max-width: 215px; }
+.panel-right.is-empty .map-wrap svg { max-width: 240px; }
 
 .empty-state {
   display: none;
